@@ -19,6 +19,10 @@ class Config:
     _default_cloze_type = "Inka Cloze"
     _default_cloze_field = "Text"
     _default_highlight_style = "monokai"
+    _default_double_side_type = "Inka Double Side"
+    _default_side1_field = "Side1"
+    _default_side2_field = "Side2"
+    _default_common_field = "Common"
 
     def __init__(self, config_path: Union[str, Path]):
         self._config = configparser.ConfigParser()
@@ -49,6 +53,10 @@ class Config:
                 "back_field": self._default_back_field,
                 "cloze_type": self._default_cloze_type,
                 "cloze_field": self._default_cloze_field,
+                "double_side_type": self._default_double_side_type,
+                "side1_field": self._default_side1_field,
+                "side2_field": self._default_side2_field,
+                "common_field": self._default_common_field,
             },
             "highlight": {
                 "style": self._default_highlight_style,

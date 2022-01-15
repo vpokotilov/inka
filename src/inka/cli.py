@@ -39,8 +39,8 @@ DEFAULT_ANKI_FOLDERS = {
 }
 
 FILE_EXTENSIONS = [".md", ".markdown"]
-CONFIG_PATH = f"{os.path.dirname(__file__)}/config.ini"
-HASHES_PATH = f"{os.path.dirname(__file__)}/hashes.json"
+CONFIG_PATH = "config.ini"
+HASHES_PATH = "hashes.json"
 
 CONFIG = Config(CONFIG_PATH)
 
@@ -207,6 +207,10 @@ def handle_note_types(anki_api: AnkiApi) -> None:
     curr_back_field = CONFIG.get_option_value("anki", "back_field")
     curr_cloze_type = CONFIG.get_option_value("anki", "cloze_type")
     curr_cloze_field = CONFIG.get_option_value("anki", "cloze_field")
+    curr_double_side_type = CONFIG.get_option_value("anki", "double_side_type")
+    curr_side1_field = CONFIG.get_option_value("anki", "side1_field")
+    curr_side2_field = CONFIG.get_option_value("anki", "side2_field")
+    curr_common_field = CONFIG.get_option_value("anki", "common_field")
     css = """.card {
   font-family: arial;
   font-size: 20px;
@@ -285,6 +289,43 @@ code {
             )
         CONFIG.update_option_value("anki", "cloze_type", cloze_name)
         CONFIG.update_option_value("anki", "cloze_field", text_field)
+
+    # Double Side Note
+    if (
+            not (curr_double_side_type and curr_side1_field and curr_side2_field and curr_common_field)
+            or curr_double_side_type not in note_types
+    ):
+        double_side_name = "Inka Double Side"
+        side1_field = "Side1"
+        side2_field = "Side2"
+        common_field = "Common"
+        if double_side_name not in note_types:
+            anki_api.create_note_type(
+                name=double_side_name,
+                fields=[side1_field, side2_field, common_field],
+                css=css,
+                card_templates=[
+                    {
+                        "Name": "Card 1",
+                        "Front": "{{" + f"{side1_field}" + "}}\n",
+                        "Back": "{{FrontSide}}\n<hr id=answer>\n"
+                                + "{{" + f"{side2_field}" + "}}\n"
+                                + "{{" + f"{common_field}" + "}}\n",
+                    },
+                    {
+                        "Name": "Card 2",
+                        "Front": "{{" + f"{side2_field}" + "}}\n",
+                        "Back": "{{FrontSide}}\n<hr id=answer>\n"
+                                + "{{" + f"{side1_field}" + "}}\n"
+                                + "{{" + f"{common_field}" + "}}\n",
+                    },
+                ],
+                is_cloze=False,
+            )
+        CONFIG.update_option_value("anki", "double_side_type", double_side_name)
+        CONFIG.update_option_value("anki", "side1_field", side1_field)
+        CONFIG.update_option_value("anki", "side2_field", side2_field)
+        CONFIG.update_option_value("anki", "common_field", common_field)
 
 
 def check_note_types(anki_media: AnkiMedia, anki_api: AnkiApi) -> None:

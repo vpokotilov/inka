@@ -2,6 +2,7 @@ import re
 from pathlib import Path
 from typing import List, Optional, Union
 
+from .notes.double_side_note import DoubleSideNote
 from ..mistune_plugins.mathjax import BLOCK_MATH
 from .notes.basic_note import BasicNote
 from .notes.cloze_note import ClozeNote
@@ -43,6 +44,7 @@ class Parser:
         re.MULTILINE,
     )
     _answer_regex = re.compile(r"(?:^>.*?(?:\n|$))+", re.MULTILINE)
+    _double_side_type_separator = "\n\n%\n\n"
 
     def __init__(
         self,
@@ -77,8 +79,26 @@ class Parser:
         for string in note_strings:
             anki_id = self.get_id(string)
 
+            if self._is_double_side_note_str(string):
+                side1 = self.get_question(string)
+                side2_and_common = self._get_cleaned_answer(string)
+                side2 = side2_and_common.split(self._double_side_type_separator)[0].strip()
+                common = side2_and_common.split(self._double_side_type_separator)[1].strip()
+                if not side1 or not side2 or not common:
+                    continue
+
+                notes.append(
+                    DoubleSideNote(
+                        side1_md=side1,
+                        side2_md=side2,
+                        common_md=common,
+                        tags=tags,
+                        deck_name=deck_name,
+                        anki_id=anki_id,
+                    )
+                )
             # we check in this order because is_cloze_note_str can match front/back note if it contains curly braces
-            if self._is_basic_note_str(string):
+            elif self._is_basic_note_str(string):
                 question = self.get_question(string)
                 answer = self._get_cleaned_answer(string)
                 if not question or not answer:
@@ -177,6 +197,19 @@ class Parser:
 
         tags = matches[0].strip().split()
         return tags
+
+    @classmethod
+    def _is_double_side_note_str(cls, string: str) -> bool:
+        """Check if note string contains double side note type"""
+        match = re.search(cls._basic_note_regex, string)
+        if not match:
+            return False
+
+        cleaned_answer = cls._get_cleaned_answer(string)
+        if cleaned_answer and cls._double_side_type_separator in cleaned_answer:
+            return True
+
+        return False
 
     @classmethod
     def _is_basic_note_str(cls, string: str) -> bool:
