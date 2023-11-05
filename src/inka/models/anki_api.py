@@ -63,11 +63,13 @@ class AnkiApi:
         if auth is None:
             raise AnkiApiError("Isn't authenticated with AnkiWeb")
 
-        self._collection.save(trx=False)
+        # save() is deprecated: saving is automatic
+        #self._collection.save(trx=False)
 
         # Perform main sync
         try:
-            self._collection.sync_collection(auth)
+            # missing 1 required positional argument: 'sync_media'
+            self._collection.sync_collection(auth, sync_media=True)
         except anki.errors.NetworkError:
             raise AnkiApiError("Please check your internet connection")
 
@@ -119,7 +121,9 @@ class AnkiApi:
         for field, value in note.get_html_fields(self._cfg).items():
             if field in anki_note:
                 anki_note[field] = value
-        anki_note.flush()
+        # flush() is deprecated: please use col.update_note()
+        # anki_note.flush()
+        self._collection.update_note(anki_note)
 
     def fetch_note_types(self) -> List[str]:
         """Get list of names of the existing note types"""
