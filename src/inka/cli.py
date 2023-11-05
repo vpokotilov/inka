@@ -227,6 +227,7 @@ def handle_note_types(anki_api: AnkiApi) -> None:
 
 li p {
     margin: 0 0 0 0
+    padding: 0
 }
 
 code {
