@@ -256,6 +256,7 @@ convert_cloze_test_cases = {
 
 md_to_html_test_cases = {
     "some text here": "<p>some text here</p>",
+    "some text <div>with html elements</div>": "<p>some text <div>with html elements</div></p>",
     (
         "1. Item1\n"
         "2. Item2\n"

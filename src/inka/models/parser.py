@@ -216,7 +216,7 @@ class Parser:
             else:
                 cleaned_lines.append(line[1:].rstrip())
 
-        cleaned_answer = "\n\n".join(cleaned_lines)
+        cleaned_answer = "\n".join([line if line != '' else '' for line in cleaned_lines])
 
         def replace_newlines(s: re.Match) -> str:
             return re.sub("\n\n", "\n", s.group(0))

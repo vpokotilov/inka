@@ -8,6 +8,7 @@ from .notes.basic_note import Note
 from .notes.cloze_note import ClozeNote
 
 MD = mistune.create_markdown(
+    escape=False,
     plugins=["strikethrough", "footnotes", "table", plugin_mathjax]
 )
 
