@@ -492,9 +492,9 @@ def test_updates_multiline_question_field(writer_with_ids, notes):
         f"2. {notes[1].raw_front_md}\n"
         "\n"
         "> Second answer\n"
-        # "> \n" # This line is removed
+        "> \n" 
         "> Additional info\n"
-        # "> \n" # This line is removed
+        "> \n" 
         "> And more to it\n"
         "\n"
         f"<!--ID:{notes[2].anki_id}-->\n"

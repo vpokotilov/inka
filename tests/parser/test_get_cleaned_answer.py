@@ -32,6 +32,60 @@ test_cases = {
         "> - Item2"
     ): "- Item1\n"
        "- Item2",
+    # An ordered list is returned as is
+    (
+        "Deck: Abraham\n"
+        "\n"
+        "Tags: one two-three\n"
+        "\n"
+        "1. Some question?\n"
+        "\n"
+        "> 1. Item1\n"
+        "> 2. Item2"
+    ): "1. Item1\n"
+       "2. Item2",       
+    # Lists combined with text
+    (
+        "Deck: Abraham\n"
+        "\n"
+        "Tags: one two-three\n"
+        "\n"
+        "1. Some question?\n"
+        "\n"
+        "> Some text before\n"
+        "> - Item1\n"
+        "> - Item2\n"
+        "> Some text after\n"
+        "> 1. Item1\n"
+        "> 2. Item2"
+    ):  "Some text before\n\n"
+        "- Item1\n"
+        "- Item2\n"
+        "Some text after\n\n"
+        "1. Item1\n"
+        "2. Item2",       
+    # A table is respected
+    (
+        "Deck: Abraham\n"
+        "\n"
+        "Tags: one two-three\n"
+        "\n"
+        "1. Some question?\n"
+        "\n"
+        "> Some text before\n"
+        "> | Header 1 | Header 2 |\n"
+        "> |----------|----------|\n"
+        "> |  Row 1   |   Row 1  |\n"
+        "> |  Row 2   |   Row 2  |\n"
+        "> Some text after\n"
+        "> Last text"
+    ):  "Some text before\n\n"
+        "| Header 1 | Header 2 |\n"
+        "|----------|----------|\n"
+        "|  Row 1   |   Row 1  |\n"
+        "|  Row 2   |   Row 2  |\n"
+        "Some text after\n\n"
+        "Last text",
     # Empty lines are respected
     (
         "Deck: Abraham\n"
@@ -44,10 +98,10 @@ test_cases = {
         ">\n"
         ">\n"
         "> Answer line 2"
-    ): "Answer line 1\n"
-       "\n"
-        "\n"
-       "Answer line 2",
+    ):  "Answer line 1\n\n"
+        "\n\n"
+        "\n\n"
+        "Answer line 2",
     (
         "Deck: Abraham\n"
         "\n"
@@ -57,7 +111,7 @@ test_cases = {
         "> Additional info\n"
         "> \n"
         "> And more to it"
-    ): "Answer\nAdditional info\n\nAnd more to it",
+    ): "Answer\n\nAdditional info\n\n\n\nAnd more to it",
     "Deck: Abraham\n\n1. Some question?\n\n> > Answer\n": "> Answer",
     (
         "Deck: Abraham\n"
@@ -79,7 +133,6 @@ test_cases = {
         "> ```python\n"
         "> def hello(name: str) -> str:\n"
         ">     return f'Hello, {name}!'\n"
-        ">\n" # This line gets removed
         "> if __name__ == '__main__':\n"
         ">     print(hello('bro'))\n"
         "> ```\n"
@@ -90,7 +143,7 @@ test_cases = {
         "    return f'Hello, {name}!'\n"
         "if __name__ == '__main__':\n"
         "    print(hello('bro'))\n"
-        "```\n"
+        "```\n\n"
         "some text"
     ),
     (
@@ -113,51 +166,50 @@ test_cases = {
         "> def hello(name: str) -> str:\n"
         ">     return f'Hello, {name}!\n"
         "> ```\n"
-        ">\n" # This line gets removed
         "> text after\n"
         ">\n"
         "> ```commandline\n"
         "> inka collect -u path/to/file.md\n"
         "> ```\n"
     ): (
-        "Some text before:\n"
+        "Some text before:\n\n"
         "```python\n"
         "def hello(name: str) -> str:\n"
         "    return f'Hello, {name}!'\n"
+        "\n"
         "if __name__ == '__main__':\n"
         "    print(hello('bro'))\n"
-        "```\n"
-        "text in between\n"
+        "```\n\n"
+        "text in between\n\n"
         "```python\n"
         "def hello(name: str) -> str:\n"
         "    return f'Hello, {name}!\n"
-        "```\n"
-        "\n"
-        "text after\n"
-        "\n"
+        "```\n\n"
+        "text after\n\n"
+        "\n\n"
         "```commandline\n"
         "inka collect -u path/to/file.md\n"
         "```"
     ),
     # inline mathjax
-    "> $\n> X^{2}\n> $": "$\nX^{2}\n$",
-    "> \\$\n> X^{2}\n> $": "\\$\nX^{2}\n$",
-    "> $\n> X^{2}\n> \\$": "$\nX^{2}\n\\$",
+    "> $\n> X^{2}\n> $": "$\n\nX^{2}\n\n$",
+    "> \\$\n> X^{2}\n> $": "\\$\n\nX^{2}\n\n$",
+    "> $\n> X^{2}\n> \\$": "$\n\nX^{2}\n\n\\$",
     # mathjax blocks
     "> $$\n> X^{2}\n> $$": "$$\nX^{2}\n$$",
-    "> \\$$\n> X^{2}\n> $$": "\\$$\nX^{2}\n$$",
-    "> $\\$\n> X^{2}\n> $$": "$\\$\nX^{2}\n$$",
-    "> $$\n> X^{2}\n> \\$$": "$$\nX^{2}\n\\$$",
-    "> $$\n> X^{2}\n> $\\$": "$$\nX^{2}\n$\\$",
-    "> \\$\\$\n> X^{2}\n> $$": "\\$\\$\nX^{2}\n$$",
-    "> \\$$\n> X^{2}\n> \\$$": "\\$$\nX^{2}\n\\$$",
-    "> \\$$\n> X^{2}\n> $\\$": "\\$$\nX^{2}\n$\\$",
-    "> $\\$\n> X^{2}\n> \\$$": "$\\$\nX^{2}\n\\$$",
-    "> $\\$\n> X^{2}\n> $\\$": "$\\$\nX^{2}\n$\\$",
-    "> \\$\\$\n> X^{2}\n> \\$$": "\\$\\$\nX^{2}\n\\$$",
-    "> \\$\\$\n> X^{2}\n> $\\$": "\\$\\$\nX^{2}\n$\\$",
-    "> $\\$\n> X^{2}\n> \\$\\$": "$\\$\nX^{2}\n\\$\\$",
-    "> \\$\\$\n> X^{2}\n> \\$\\$": "\\$\\$\nX^{2}\n\\$\\$",
+    "> \\$$\n> X^{2}\n> $$": "\\$$\n\nX^{2}\n\n$$",
+    "> $\\$\n> X^{2}\n> $$": "$\\$\n\nX^{2}\n\n$$",
+    "> $$\n> X^{2}\n> \\$$": "$$\n\nX^{2}\n\n\\$$",
+    "> $$\n> X^{2}\n> $\\$": "$$\n\nX^{2}\n\n$\\$",
+    "> \\$\\$\n> X^{2}\n> $$": "\\$\\$\n\nX^{2}\n\n$$",
+    "> \\$$\n> X^{2}\n> \\$$": "\\$$\n\nX^{2}\n\n\\$$",
+    "> \\$$\n> X^{2}\n> $\\$": "\\$$\n\nX^{2}\n\n$\\$",
+    "> $\\$\n> X^{2}\n> \\$$": "$\\$\n\nX^{2}\n\n\\$$",
+    "> $\\$\n> X^{2}\n> $\\$": "$\\$\n\nX^{2}\n\n$\\$",
+    "> \\$\\$\n> X^{2}\n> \\$$": "\\$\\$\n\nX^{2}\n\n\\$$",
+    "> \\$\\$\n> X^{2}\n> $\\$": "\\$\\$\n\nX^{2}\n\n$\\$",
+    "> $\\$\n> X^{2}\n> \\$\\$": "$\\$\n\nX^{2}\n\n\\$\\$",
+    "> \\$\\$\n> X^{2}\n> \\$\\$": "\\$\\$\n\nX^{2}\n\n\\$\\$",
     # If no answer
     "Some text": None,
 }

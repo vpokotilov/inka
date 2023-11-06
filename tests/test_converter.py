@@ -256,6 +256,9 @@ convert_cloze_test_cases = {
 
 md_to_html_test_cases = {
     "some text here": "<p>some text here</p>",
+    '![image](./src/image.jpg)' : '<p><img src="./src/image.jpg" alt="image" /></p>',
+    'text and ![image](./src/image.jpg)' : '<p>text and <img src="./src/image.jpg" alt="image" /></p>',
+    'Format: ![Safari](./images/calibre_emblems_oreilly.png)' : '<p>Format: <img src="./images/calibre_emblems_oreilly.png" alt="Safari" /></p>',
     "some text <div>with html elements</div>": "<p>some text <div>with html elements</div></p>",
     (
         "1. Item1\n"

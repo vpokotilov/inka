@@ -216,10 +216,19 @@ class Parser:
             else:
                 cleaned_lines.append(line[1:].rstrip())
 
-        cleaned_answer = "\n".join([line if line != '' else '' for line in cleaned_lines])
+        cleaned_answer = "\n\n".join([line if line != '' else '' for line in cleaned_lines])
 
         def replace_newlines(s: re.Match) -> str:
             return re.sub("\n\n", "\n", s.group(0))
+        
+        # change newlines in unordered lists
+        cleaned_answer = re.sub(r"^(?:-|\*|\+)\s.*(?:\n\n)+", replace_newlines, cleaned_answer, flags=re.MULTILINE)
+
+        # change newlines in ordered lists
+        cleaned_answer = re.sub(r"^\d+\.\s.*(?:\n\n)+", replace_newlines, cleaned_answer, flags=re.MULTILINE)
+
+        # change newlines in tables
+        cleaned_answer = re.sub(r"(\|.*\|.*(?:\n\n)+)", replace_newlines, cleaned_answer, flags=re.MULTILINE)
 
         # change newlines in code blocks
         cleaned_answer = re.sub(r"```[\s\S]*?```", replace_newlines, cleaned_answer)

@@ -225,7 +225,7 @@ def handle_note_types(anki_api: AnkiApi) -> None:
   color: lightblue;
 }
 
-li p {
+.compact {
     margin: 0 0 0 0
     padding: 0
 }
