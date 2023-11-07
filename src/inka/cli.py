@@ -225,11 +225,6 @@ def handle_note_types(anki_api: AnkiApi) -> None:
   color: lightblue;
 }
 
-.compact {
-    margin: 0 0 0 0
-    padding: 0
-}
-
 code {
   background-color: #232831;
   color: #fa4545;
@@ -364,7 +359,6 @@ def reset_config_file(ctx, param, value) -> None:
 
 
 def list_config_options(ctx, param, value) -> None:
-    print("atassani LIST CONFIG OPTIONS")
     if not value or ctx.resilient_parsing:
         return
 
@@ -383,7 +377,6 @@ def cli() -> None:
     Github:\n
         https://github.com/keiqu/inka
     """
-    print("atassani CLI")
     pass
 
 
@@ -427,7 +420,6 @@ def config(list_options: bool, reset: bool, edit: bool, name: str, value: str) -
         Set a new value to the "defaults.profile" option:\n
             inka config defaults.profile "My Profile"
     """
-    print("atassani CONFIG")
     try:
         section, key = name.split(".")
 
