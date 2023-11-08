@@ -119,3 +119,21 @@ inka collect path/to/cards.md path/to/folder
 ```
 
 You can find more information on the [documentation page](https://github.com/keiqu/inka/wiki/Adding-cards-to-Anki).
+
+### Additions
+Toni here.
+
+8 Nov 2023
+- I made it work with the new version of Anki.
+- It does not add paragraphs \<p\> inside lists or inside tables, so they can be better rendered.
+- It allows for HTML code to be inserted, so \<div\> can be inserted to control presentation.
+- I discovered tests can be run with `tox`, or `tox -- -vv`.
+- It can be built with:
+```bash
+python -m pip install build
+```
+- It can be locally installed with:
+```bash
+python -m build --wheel
+pip install dist/inka-99.9-py3-none-any.whl --force-reinstall
+```
